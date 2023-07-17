@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Main | Soumojit Shome</title>
+
+    <!-- =================================Links================================= -->
+    <link rel="stylesheet" href="chat_page.css">
+    <link rel="shortcut icon" href="" id="fav_icon" type="image/x-icon">
+
+    <!-- =================================Meta Tags================================= -->
+    <meta name="theme-color" content="#474543" />
+
+    <meta name="title" content="Simple Chatting Website | Soumojit Shome">
+    <meta name="description" content="Simple Chatting Website | Soumojit Shome">
+    <meta name="keywords" content="chat, chatting, soumojit shome">
+    <meta name="robots" content="index, follow">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="language" content="English">
+    <meta name="revisit-after" content="5 days">
+    <meta name="author" content="Soumojit Shome">
+
+    <meta itemprop="image" content="https://drive.google.com/uc?export=view&id=1J0GLlqQKAfC_B9Ix0mugjmGafN84lB9S">
+
+    <meta property="og:title" content="Simple Chatting Website | Soumojit Shome">
+    <meta property="og:site_name" content="Simple Chatting Website | Soumojit Shome">
+    <meta property="og:url" content="https://chatting-webapp-soumojit.vercel.app">
+    <meta property="og:description" content="Simple Chatting Website | Soumojit Shome">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://drive.google.com/uc?export=view&id=1J0GLlqQKAfC_B9Ix0mugjmGafN84lB9S">
+
+    <!-- =================================Font Awesome================================= -->
+    <script src="https://kit.fontawesome.com/813697e957.js" crossorigin="anonymous"></script>
+
+    <!--============================== FireBase Script==============================-->
+    <script src="https://www.gstatic.com/firebasejs/8.9.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.9.0/firebase-database.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/8.9.0/firebase-auth.js"></script>
+
+
+</head>
+
+<body>
+
+    <!--===========================Avaible People=================================-->
+
+    <section class="avaible_people">
+        <section class="heading">
+            <img class="chat_profile_pic" id="user_pic_head" src="" alt="pic">
+            <div>
+                <span id="user_name"></span>
+                <span id="sign_out_btn" onclick="sign_out_btn()">
+                    <!-- <i class="fa-solid fa-pen-to-square"></i> -->
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                </span>
+            </div>
+            <p>Chats</p>
+            <div id="online_contact_toggle_bar">
+                <button id="online_btn" onclick="online_toggle_btn()"><span>Online</span></button>
+                <button id="contact_btn" onclick="contact_toggle_btn()"><span>Contact</span></button>
+            </div>
+
+        </section>
+
+        <section id="chats">
+            <div class="loading">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+
+
+        </section>
+        <section id="your_contact">
+
+        </section>
+
+    </section>
+    <!-- ================================================================================= -->
+
+
+
+
+    <!-- =================================Main Chat Screen================================= -->
+    <section id="main_chat_screen">
+
+
+        <!-- =================================Head================================= -->
+        <section id="chat_receiver_name_sender_name">
+            <div class="back_btn" onclick="back()">
+                <i class="fa-solid fa-arrow-left"></i>
+
+            </div>
+            <div id="chat_receiver_details">
+
+                <img class="chat_profile_pic" id="receiver_pic_on_head" src="" alt="">
+                <span>
+                    <span id="receiver_name_on_head"></span>
+                    <span id="line_status"></span>
+                </span>
+
+            </div>
+
+        </section>
+        <!-- ========================================================================= -->
+
+
+        <!-- =================================Chats Area================================= -->
+        <section id="chat_area">
+
+            <section id="inside_chat_area">
+
+            </section>
+            <span id="chat_bottom"></span>
+
+        </section>
+        <!-- ========================================================================= -->
+
+
+        <!-- =================================Chat Input================================= -->
+        <section id="chat_input_area">
+
+            <textarea id="chat_entry" name="message" rows="4" cols="50" placeholder="Type Message" maxlength="100"
+                title="Type message here"></textarea>
+
+
+            <button id="submit-btn" onclick="waiting_message()" class="btn" disabled>
+                <div class="svg-wrapper-1">
+                    <div class="svg-wrapper">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                            <path fill="none" d="M0 0h24v24H0z"></path>
+                            <path fill="currentColor"
+                                d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z">
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+                <span>Send</span>
+            </button>
+
+
+            <div class="loading-wave" id="wait_mess">
+                <div class="loading-bar"></div>
+                <div class="loading-bar"></div>
+                <div class="loading-bar"></div>
+                <div class="loading-bar"></div>
+            </div>
+
+
+        </section>
+        <!-- ========================================================================= -->
+
+
+
+
+        <!-- =================================Copy Right================================= -->
+        <div class="copy_right">
+            <a href="https://iamsoumojit.vercel.app" target="_blank">
+                <p>Designed by Soumojit Shome</p>
+            </a>
+        </div>
+        <!-- ======================================================================== -->
+
+
+
+    </section>
+    <!-- ================================================================================ -->
+
+
+
+
+</body>
+
+
+<!-- =================================Scripts================================= -->
+
+<script src="FireBase.js"></script>
+<script src="chat_page.js"></script>
+
+<!-- <script disable-devtool-auto src='https://cdn.jsdelivr.net/npm/disable-devtool@latest'></script> -->
+
+</html>

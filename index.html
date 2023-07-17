@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Chat | Soumojit Shome</title>
+
+    <!-- =================================Links================================= -->
+    <link rel="shortcut icon" href="favicon.jpg" type="image/x-icon">
+
+    <!-- =================================Meta Tags================================= -->
+    <meta name="theme-color" content="#474543" />
+
+
+    <meta name="title" content="Simple Chatting Website | Soumojit Shome">
+    <meta name="description" content="Simple Chatting Website | Soumojit Shome">
+    <meta name="keywords" content="chat, chatting, soumojit shome">
+    <meta name="robots" content="index, follow">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="language" content="English">
+    <meta name="revisit-after" content="5 days">
+    <meta name="author" content="Soumojit Shome">
+
+    <meta itemprop="image" content="https://drive.google.com/uc?export=view&id=1J0GLlqQKAfC_B9Ix0mugjmGafN84lB9S">
+
+    <meta property="og:title" content="Simple Chatting Website | Soumojit Shome">
+    <meta property="og:site_name" content="Simple Chatting Website | Soumojit Shome">
+    <meta property="og:url" content="https://chatting-webapp-soumojit.vercel.app">
+    <meta property="og:description" content="Simple Chatting Website | Soumojit Shome">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://drive.google.com/uc?export=view&id=1J0GLlqQKAfC_B9Ix0mugjmGafN84lB9S">
+
+
+    <!-- =================================Style================================= -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            /* border: 3px solid red; */
+            height: 100vh;
+            /* background-image: linear-gradient(#921b2f, #240b36); */
+            background: linear-gradient(to bottom, #1f1c2c, #928dab);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            flex-direction: column;
+
+        }
+
+        svg {
+            fill: white;
+        }
+
+        #icon {
+            /* border: 3px solid white; */
+            width: fit-content;
+        }
+
+        footer {
+            /* border: 3px solid yellow; */
+            position: absolute;
+            bottom: 25px;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+
+        .loading {
+            /* border: 3px solid white; */
+            --speed-of-animation: 0.9s;
+            --gap: 6px;
+            --first-color: #4c86f9;
+            --second-color: #49a84c;
+            --third-color: #f6bb02;
+            --fourth-color: #f6bb02;
+            --fifth-color: #2196f3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100px;
+            gap: 6px;
+            height: 100px;
+            margin: auto;
+        }
+
+        .loading span {
+            width: 4px;
+            height: 50px;
+            background: var(--first-color);
+            animation: scale var(--speed-of-animation) ease-in-out infinite;
+        }
+
+        .loading span:nth-child(2) {
+            background: var(--second-color);
+            animation-delay: -0.8s;
+        }
+
+        .loading span:nth-child(3) {
+            background: var(--third-color);
+            animation-delay: -0.7s;
+        }
+
+        .loading span:nth-child(4) {
+            background: var(--fourth-color);
+            animation-delay: -0.6s;
+        }
+
+        .loading span:nth-child(5) {
+            background: var(--fifth-color);
+            animation-delay: -0.5s;
+        }
+
+        @keyframes scale {
+
+            0%,
+            40%,
+            100% {
+                transform: scaleY(0.05);
+            }
+
+            20% {
+                transform: scaleY(1);
+            }
+        }
+    </style>
+
+
+</head>
+
+<body>
+
+    <!-- =================================Wp icon================================= -->
+    <section id="icon">
+
+        <svg width="200px" height="200px" viewBox="0 0 24 24" version="1.1" id="svg8"
+            inkscape:version="0.92.4 (5da689c313, 2019-01-14)" sodipodi:docname="1881161.svg"
+            xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/"
+            xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+            xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+            xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:svg="http://www.w3.org/2000/svg"
+            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve">
+            <path id="path4" inkscape:connector-curvature="0"
+                d="M16.6,14c-0.2-0.1-1.5-0.7-1.7-0.8c-0.2-0.1-0.4-0.1-0.6,0.1c-0.2,0.2-0.6,0.8-0.8,1c-0.1,0.2-0.3,0.2-0.5,0.1c-0.7-0.3-1.4-0.7-2-1.2c-0.5-0.5-1-1.1-1.4-1.7c-0.1-0.2,0-0.4,0.1-0.5c0.1-0.1,0.2-0.3,0.4-0.4c0.1-0.1,0.2-0.3,0.2-0.4c0.1-0.1,0.1-0.3,0-0.4c-0.1-0.1-0.6-1.3-0.8-1.8C9.4,7.3,9.2,7.3,9,7.3c-0.1,0-0.3,0-0.5,0C8.3,7.3,8,7.5,7.9,7.6C7.3,8.2,7,8.9,7,9.7c0.1,0.9,0.4,1.8,1,2.6c1.1,1.6,2.5,2.9,4.2,3.7c0.5,0.2,0.9,0.4,1.4,0.5c0.5,0.2,1,0.2,1.6,0.1c0.7-0.1,1.3-0.6,1.7-1.2c0.2-0.4,0.2-0.8,0.1-1.2C17,14.2,16.8,14.1,16.6,14 M19.1,4.9C15.2,1,8.9,1,5,4.9c-3.2,3.2-3.8,8.1-1.6,12L2,22l5.3-1.4c1.5,0.8,3.1,1.2,4.7,1.2h0c5.5,0,9.9-4.4,9.9-9.9C22,9.3,20.9,6.8,19.1,4.9 M16.4,18.9c-1.3,0.8-2.8,1.3-4.4,1.3h0c-1.5,0-2.9-0.4-4.2-1.1l-0.3-0.2l-3.1,0.8l0.8-3l-0.2-0.3C2.6,12.4,3.8,7.4,7.7,4.9S16.6,3.7,19,7.5C21.4,11.4,20.3,16.5,16.4,18.9" />
+        </svg>
+        <div class="loading">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </section>
+    <!-- ============================================================================= -->
+
+
+    <!-- =================================Footer================================= -->
+    <footer>
+        Designed By Soumojit Shome
+    </footer>
+    <!-- ============================================================================ -->
+
+
+</body>
+
+
+<!-- =================================Scripts================================= -->
+<script>
+    localStorage.removeItem("receiver_name");
+    localStorage.removeItem("receiver_profilepicurl");
+
+    setTimeout(() => {
+        if ((localStorage.getItem("user_name") != null)) {
+
+            location.href = "chat_page.html"
+        } else {
+
+            location.href = "login.html"
+        }
+    }, 1500);
+
+
+
+</script>
+<!-- ========================================================================= -->
+
+
+
+</html>
