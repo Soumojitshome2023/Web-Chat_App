@@ -74,7 +74,7 @@ function chat_bottom() {
 
 
 
-// ======================================Last Open Other Profile================================================
+// ==========================Last Open Other Profile====================================
 
 function last_open_other_profile(name) {
     if (localStorage.getItem("contact") != null) {
@@ -148,7 +148,7 @@ function back() {
 
 
 
-// =======================================Auto Back===============================================
+// ==================================Auto Back==========================================
 
 if (localStorage.getItem("user_name") == null) {
     location.href = "login.html"
@@ -177,40 +177,40 @@ function cntct_update() {
         // firebase.auth().onAuthStateChanged(function (user) {
         //     if (user) {
 
-                let username = localStorage.getItem("user_name");
-                let useruid = localStorage.getItem("user_uid");
-                let current_time = Math.trunc(new Date().getTime() / 1000);
+        let username = localStorage.getItem("user_name");
+        let useruid = localStorage.getItem("user_uid");
+        let current_time = Math.trunc(new Date().getTime() / 1000);
 
 
-                var newData = {
-                    name: username,
-                    user_uid: useruid,
-                    time: current_time,
-                    user_photoURL: localStorage.getItem("user_photoURL"),
-                };
+        var newData = {
+            name: username,
+            user_uid: useruid,
+            time: current_time,
+            user_photoURL: localStorage.getItem("user_photoURL"),
+        };
 
-                firebase.database().ref("online/" + useruid).set(newData);
-
-
-                firebase.database().ref("online").on("value", function (snapshot) {
+        firebase.database().ref("online/" + username).set(newData);
 
 
-                    document.getElementById("chats").innerHTML = "";
-                    let flag = 0;
-                    let s = 0;
+        firebase.database().ref("online").on("value", function (snapshot) {
 
-                    snapshot.forEach(function (childSnapshot) {
-                        var userData = childSnapshot.val();
 
-                        let name = userData.name;
-                        let time = userData.time;
-                        let userphotoURL = userData.user_photoURL;
+            document.getElementById("chats").innerHTML = "";
+            let flag = 0;
+            let s = 0;
 
-                        if (current_time < time + 5) {
+            snapshot.forEach(function (childSnapshot) {
+                var userData = childSnapshot.val();
 
-                            if (name != username) {
+                let name = userData.name;
+                let time = userData.time;
+                let userphotoURL = userData.user_photoURL;
 
-                                let tmp4 = `
+                if (current_time < time + 5) {
+
+                    if (name != username) {
+
+                        let tmp4 = `
                         <div class="chat_profile">
                             <img class="chat_profile_pic" src="${userphotoURL}" alt="">
                             <div onclick="user_wish('${name}', '${userphotoURL}')">
@@ -223,48 +223,48 @@ function cntct_update() {
                     
                             `;
 
-                                s++;
+                        s++;
 
-                                document.getElementById("chats").innerHTML += tmp4;
+                        document.getElementById("chats").innerHTML += tmp4;
 
 
-                                if (localStorage.getItem("contact") != null) {
-                                    let obj = JSON.parse(localStorage.getItem("contact"));
+                        if (localStorage.getItem("contact") != null) {
+                            let obj = JSON.parse(localStorage.getItem("contact"));
 
-                                    obj.forEach((ele) => {
+                            obj.forEach((ele) => {
 
-                                        if (ele[0] == name) {
-                                            document.getElementsByClassName("contact_add_btn")[s - 1].innerHTML = `<i class="fa-sharp fa-solid fa-bookmark"></i>`
-                                        }
-                                    })
+                                if (ele[0] == name) {
+                                    document.getElementsByClassName("contact_add_btn")[s - 1].innerHTML = `<i class="fa-sharp fa-solid fa-bookmark"></i>`
                                 }
-                            }
-
-                            if (name == rcvr_name) {
-                                flag = 1;
-                            }
-
+                            })
                         }
-                        else {
-
-                            if (name == rcvr_name) {
-
-                                let d = new Date(time * 1000);
-                                document.getElementById("line_status").innerHTML = `Last seen ${d.toString().slice(0, 21)}`
-                            }
-                        }
-                    });
-
-                    if (s == 0) {
-                        document.getElementById("chats").innerHTML = "<p>No One Online</p>";
                     }
 
-                    if (flag == 1) {
-                        document.getElementById("line_status").innerHTML = "Online"
+                    if (name == rcvr_name) {
+                        flag = 1;
                     }
 
+                }
+                else {
 
-                });
+                    if (name == rcvr_name) {
+
+                        let d = new Date(time * 1000);
+                        document.getElementById("line_status").innerHTML = `Last seen ${d.toString().slice(0, 21)}`
+                    }
+                }
+            });
+
+            if (s == 0) {
+                document.getElementById("chats").innerHTML = "<p>No One Online</p>";
+            }
+
+            if (flag == 1) {
+                document.getElementById("line_status").innerHTML = "Online"
+            }
+
+
+        });
 
         //     }
         // })
@@ -284,11 +284,16 @@ function data_submit() {
     let chat_entry = document.getElementById("chat_entry").value;
     let date_time = new Date().toString().slice(0, 21);
     let current_time = new Date().getTime() / 1000;
+    // let sender_uid = localStorage.getItem("user_uid");
+    let sender_pic = localStorage.getItem("user_photoURL");
+    let receiver_pic = localStorage.getItem("receiver_profilepicurl");
 
     var newData = {
         sender_name: sender_name,
+        sender_pic: sender_pic,
         chat_entry: chat_entry,
         receiver_name: receiver_name,
+        receiver_pic: receiver_pic,
         date_time: date_time,
         current_time: current_time,
 
@@ -324,32 +329,32 @@ function load() {
 
     // firebase.auth().onAuthStateChanged(function (user) {
     //     if (user) {
-            firebase.database().ref("messages").once("value", function (snapshot) {
-            // firebase.database().ref("messages").on("value", function (snapshot) {
+    firebase.database().ref("messages").once("value", function (snapshot) {
+        // firebase.database().ref("messages").on("value", function (snapshot) {
 
-                length = snapshot.numChildren();
+        length = snapshot.numChildren();
 
-                if (length > old_len) {
-                    temp = 1;
+        if (length > old_len) {
+            temp = 1;
 
-                    // console.log("run 1")
+            // console.log("run 1")
 
-                    snapshot.forEach(function (childSnapshot) {
-                        var userData = childSnapshot.val();
-                        // console.log("run 2")
+            snapshot.forEach(function (childSnapshot) {
+                var userData = childSnapshot.val();
+                // console.log("run 2")
 
 
-                        sender_name = userData.sender_name;
-                        chat_entry = userData.chat_entry;
-                        receiver_name = userData.receiver_name;
-                        date_time = userData.date_time;
+                sender_name = userData.sender_name;
+                chat_entry = userData.chat_entry;
+                receiver_name = userData.receiver_name;
+                date_time = userData.date_time;
 
-                        if (temp > old_len) {
+                if (temp > old_len) {
 
-                            // console.log("run 3")
-                            if (sender_name == sndr_name && receiver_name == rcvr_name) {
+                    // console.log("run 3")
+                    if (sender_name == sndr_name && receiver_name == rcvr_name) {
 
-                                let tmp1 = `
+                        let tmp1 = `
                             <div class="send_message">
                                 <div class="mess_time">
                                     <p class="time">${date_time}</p>
@@ -359,12 +364,12 @@ function load() {
                             </div>
                                  `;
 
-                                document.getElementById("inside_chat_area").innerHTML += tmp1;
+                        document.getElementById("inside_chat_area").innerHTML += tmp1;
 
-                            }
-                            else if (sender_name == rcvr_name && receiver_name == sndr_name) {
+                    }
+                    else if (sender_name == rcvr_name && receiver_name == sndr_name) {
 
-                                let tmp2 = `
+                        let tmp2 = `
                             <div class="received_message">
                                 <div class="mess_time">
                                     <p class="time">${date_time}</p>
@@ -374,23 +379,23 @@ function load() {
                             </div>
                                  `;
 
-                                document.getElementById("inside_chat_area").innerHTML += tmp2;
+                        document.getElementById("inside_chat_area").innerHTML += tmp2;
 
-                            }
+                    }
 
-                            // last_open_other_profile(rcvr_name);
-                            chat_bottom();
-                        }
-
-                        // console.log(email);
-                        temp++;
-                    });
-
-                    old_len = length;
+                    // last_open_other_profile(rcvr_name);
+                    chat_bottom();
                 }
 
-
+                // console.log(email);
+                temp++;
             });
+
+            old_len = length;
+        }
+
+
+    });
     //     }
     // })
 
@@ -401,7 +406,7 @@ function load() {
 
 
 
-// =========================================Last Location=============================================
+// ================================Last Location====================================
 
 let last_location;
 
@@ -412,11 +417,14 @@ function lastlocation_call() {
     else if (last_location == 2) {
         contact_toggle_btn();
     }
+    else if (last_location == 3) {
+        friends_toggle_btn();
+    }
 }
 // ======================================================================================
 
 
-// ==========================================Add to Contact============================================
+// ==================================Add to Contact====================================
 
 function add_to_contact(name, profile_pic) {
 
@@ -457,7 +465,7 @@ function add_to_contact(name, profile_pic) {
 // =========================================================================================
 
 
-// ======================================Online & Contact Toggle=====================================
+// =========================Online,  Contact & Friends Toggle========================
 
 document.getElementById("online_btn").style.boxShadow = "0 0 5px 2px yellow";
 document.getElementById("your_contact").style.display = "none";
@@ -471,6 +479,9 @@ function online_toggle_btn() {
 
     document.getElementById("your_contact").style.display = "none";
     document.getElementById("contact_btn").style.boxShadow = "none";
+
+    document.getElementById("friends_sec").style.display = "none";
+    document.getElementById("friends_btn").style.boxShadow = "none";
 
 }
 
@@ -487,6 +498,10 @@ function contact_toggle_btn() {
 
     document.getElementById("your_contact").style.display = "block";
     document.getElementById("contact_btn").style.boxShadow = "0 0 5px 2px yellow";
+
+    document.getElementById("friends_sec").style.display = "none";
+    document.getElementById("friends_btn").style.boxShadow = "none";
+
     let s = 0;
 
     if (localStorage.getItem("contact") != null) {
@@ -527,12 +542,91 @@ function contact_toggle_btn() {
     }
 }
 
-// ===========================================================================================
+
+function friends_toggle_btn() {
+
+    last_location = 3;
+
+    document.getElementById("friends_sec").innerHTML = "";
+
+    document.getElementById("chats").style.display = "none";
+    document.getElementById("online_btn").style.boxShadow = "none";
+
+    document.getElementById("your_contact").style.display = "none";
+    document.getElementById("contact_btn").style.boxShadow = "none";
+
+    document.getElementById("friends_sec").style.display = "block";
+    document.getElementById("friends_btn").style.boxShadow = "0 0 5px 2px yellow";
+
+    let obj = [];
+
+    firebase.database().ref("messages").once("value", function (snapshot) {
+
+
+        snapshot.forEach(function (childSnapshot) {
+            var userData = childSnapshot.val();
+
+            sender_name = userData.sender_name;
+            receiver_name = userData.receiver_name;
+            receiver_pic = userData.receiver_pic;
 
 
 
 
-// ==========================================sign out===============================================
+            if (sender_name == sndr_name) {
+                //|| receiver_name == sndr_name
+
+                let flag = 0;
+
+                if (obj[0] != null) {
+                    obj.forEach((ele, ind) => {
+                        if (obj[ind] == sender_name + "_" + receiver_name) {
+                            flag = 1;
+                        }
+                    })
+                }
+
+                if (flag == 0) {
+
+                    let tmp4 = `
+                    <div class="chat_profile">
+                        <img class="chat_profile_pic" src="${receiver_pic}" alt="pic">
+                        <div onclick="user_wish('${receiver_name}', '${receiver_pic}')">
+                            <p class="chat_person_name">${receiver_name}</p>
+                        </div>
+                        <button class="contact_add_btn" onclick="add_to_contact('${receiver_name}', '${receiver_pic}')">
+                            <i class="fa-sharp fa-regular fa-bookmark"></i>
+                        </button>
+                        </div> 
+                        
+                        `;
+
+
+
+                    obj.push(sender_name + "_" + receiver_name);
+
+                    // localStorage.setItem("temp_data", JSON.stringify(obj));
+                    document.getElementById("friends_sec").innerHTML += tmp4;
+                }
+
+
+            }
+
+
+        });
+
+    });
+
+
+
+}
+
+// =======================================================================================
+
+
+
+
+// =====================================sign out==========================================
 
 
 function sign_out_btn() {
@@ -548,7 +642,7 @@ function sign_out_btn() {
 
 
 
-// ======================================New Msg Notification======================================
+// ================================New Msg Notification================================
 
 let mn_sender_name;
 let mn_receiver_name;

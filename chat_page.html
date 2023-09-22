@@ -45,7 +45,7 @@
 
 <body>
 
-    <!--===========================Avaible People=================================-->
+    <!--===========================Online People=================================-->
 
     <section class="avaible_people">
         <section class="heading">
@@ -61,6 +61,7 @@
             <div id="online_contact_toggle_bar">
                 <button id="online_btn" onclick="online_toggle_btn()"><span>Online</span></button>
                 <button id="contact_btn" onclick="contact_toggle_btn()"><span>Contact</span></button>
+                <button id="friends_btn" onclick="friends_toggle_btn()"><span>Friends</span></button>
             </div>
 
         </section>
@@ -80,8 +81,12 @@
         <section id="your_contact">
 
         </section>
+        <section id="friends_sec">
+
+        </section>
 
     </section>
+
     <!-- ================================================================================= -->
 
 
@@ -89,7 +94,6 @@
 
     <!-- =================================Main Chat Screen================================= -->
     <section id="main_chat_screen">
-
 
         <!-- =================================Head================================= -->
         <section id="chat_receiver_name_sender_name">
@@ -99,7 +103,7 @@
             </div>
             <div id="chat_receiver_details">
 
-                <img class="chat_profile_pic" id="receiver_pic_on_head" src="" alt="">
+                <img class="chat_profile_pic" id="receiver_pic_on_head" src="" alt="pic">
                 <span>
                     <span id="receiver_name_on_head"></span>
                     <span id="line_status"></span>

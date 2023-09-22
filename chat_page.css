@@ -628,7 +628,8 @@ body {
     min-height: 90vh;
     height: fit-content;
     margin: 20px 0;
-    width: 400px;
+    /* width: 400px; */
+    width: fit-content;
 }
 
 .heading {
