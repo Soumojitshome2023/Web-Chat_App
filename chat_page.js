@@ -2,20 +2,15 @@
 // ========================================On Load=========================================
 
 document.getElementById("user_pic_head").src = localStorage.getItem("user_photoURL");
-
 document.getElementById("fav_icon").href = localStorage.getItem("user_photoURL");
-
 let sndr_name;
 let rcvr_name;
 
 window.addEventListener("load", () => {
-
     sndr_name = localStorage.getItem("user_name");
-
 });
 
 // ========================================================================================
-
 
 
 // =====================================Button Disabled=====================================
@@ -102,18 +97,15 @@ function last_open_other_profile(name) {
 
 function user_wish(name, receiver_profilepicurl) {
 
-
     last_open_other_profile(name);
 
     document.getElementById("receiver_name_on_head").innerHTML = name;
     localStorage.setItem("receiver_name", name);
     localStorage.setItem("receiver_profilepicurl", receiver_profilepicurl);
 
-
     document.getElementById("receiver_pic_on_head").src = receiver_profilepicurl;
 
     rcvr_name = name;
-
 
     old_len = 0;
     document.getElementById("inside_chat_area").innerHTML = "";
@@ -174,27 +166,23 @@ function cntct_update() {
     }
 
     else {
-        // firebase.auth().onAuthStateChanged(function (user) {
-        //     if (user) {
 
         let username = localStorage.getItem("user_name");
         let useruid = localStorage.getItem("user_uid");
+        let useremail = localStorage.getItem("user_email");
         let current_time = Math.trunc(new Date().getTime() / 1000);
-
 
         var newData = {
             name: username,
             user_uid: useruid,
             time: current_time,
+            user_email: useremail,
             user_photoURL: localStorage.getItem("user_photoURL"),
         };
 
-        firebase.database().ref("online/" + username).set(newData);
-
+        firebase.database().ref("online/" + useruid).set(newData);
 
         firebase.database().ref("online").on("value", function (snapshot) {
-
-
             document.getElementById("chats").innerHTML = "";
             let flag = 0;
             let s = 0;
@@ -258,16 +246,10 @@ function cntct_update() {
             if (s == 0) {
                 document.getElementById("chats").innerHTML = "<p>No One Online</p>";
             }
-
             if (flag == 1) {
                 document.getElementById("line_status").innerHTML = "Online"
             }
-
-
         });
-
-        //     }
-        // })
     }
 }
 
@@ -326,11 +308,7 @@ document.getElementById("inside_chat_area").innerHTML = "";
 
 function load() {
 
-
-    // firebase.auth().onAuthStateChanged(function (user) {
-    //     if (user) {
     firebase.database().ref("messages").once("value", function (snapshot) {
-        // firebase.database().ref("messages").on("value", function (snapshot) {
 
         length = snapshot.numChildren();
 
@@ -380,26 +358,14 @@ function load() {
                                  `;
 
                         document.getElementById("inside_chat_area").innerHTML += tmp2;
-
                     }
-
-                    // last_open_other_profile(rcvr_name);
                     chat_bottom();
                 }
-
-                // console.log(email);
                 temp++;
             });
-
             old_len = length;
         }
-
-
     });
-    //     }
-    // })
-
-
 }
 
 // =============================================================================================
@@ -520,8 +486,7 @@ function contact_toggle_btn() {
                 <button class="contact_add_btn" onclick="add_to_contact('${ele[0]}', '${ele[1]}')">
                     <i class="fa-sharp fa-solid fa-bookmark"></i>
                 </button>
-            </div> 
-            
+            </div>             
             `;
 
             document.getElementById("your_contact").innerHTML += b;
@@ -529,11 +494,9 @@ function contact_toggle_btn() {
             s++;
         });
 
-
         setInterval(() => {
             new_msg_notification();
         }, 2000);
-
     }
 
     if (s == 0) {
@@ -562,7 +525,6 @@ function friends_toggle_btn() {
 
     firebase.database().ref("messages").once("value", function (snapshot) {
 
-
         snapshot.forEach(function (childSnapshot) {
             var userData = childSnapshot.val();
 
@@ -570,12 +532,7 @@ function friends_toggle_btn() {
             receiver_name = userData.receiver_name;
             receiver_pic = userData.receiver_pic;
 
-
-
-
             if (sender_name == sndr_name) {
-                //|| receiver_name == sndr_name
-
                 let flag = 0;
 
                 if (obj[0] != null) {
@@ -601,24 +558,13 @@ function friends_toggle_btn() {
                         
                         `;
 
-
-
                     obj.push(sender_name + "_" + receiver_name);
 
-                    // localStorage.setItem("temp_data", JSON.stringify(obj));
                     document.getElementById("friends_sec").innerHTML += tmp4;
                 }
-
-
             }
-
-
         });
-
     });
-
-
-
 }
 
 // =======================================================================================
@@ -700,14 +646,11 @@ function new_msg_notification() {
                             
                                      `;
                         }
-
                     }
                 })
             }
         })
     })
-
-
 }
 
 
