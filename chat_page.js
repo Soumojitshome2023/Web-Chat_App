@@ -15,7 +15,6 @@ window.addEventListener("load", () => {
 
 // =====================================Button Disabled=====================================
 
-
 document.getElementById("chat_entry").addEventListener("input", () => {
     button_disable();
 })
@@ -207,10 +206,7 @@ function cntct_update() {
                             <button class="contact_add_btn" onclick="add_to_contact('${name}', '${userphotoURL}')">
                                 <i class="fa-sharp fa-regular fa-bookmark"></i>
                             </button>
-                        </div> 
-                    
-                            `;
-
+                        </div> `;
                         s++;
 
                         document.getElementById("chats").innerHTML += tmp4;
@@ -227,22 +223,17 @@ function cntct_update() {
                             })
                         }
                     }
-
                     if (name == rcvr_name) {
                         flag = 1;
                     }
-
                 }
                 else {
-
                     if (name == rcvr_name) {
-
                         let d = new Date(time * 1000);
                         document.getElementById("line_status").innerHTML = `Last seen ${d.toString().slice(0, 21)}`
                     }
                 }
             });
-
             if (s == 0) {
                 document.getElementById("chats").innerHTML = "<p>No One Online</p>";
             }
@@ -339,8 +330,7 @@ function load() {
                                     <p class="message">${chat_entry}</p>
                                 </div>
                                 <img src="${localStorage.getItem("user_photoURL")}" alt="">
-                            </div>
-                                 `;
+                            </div>  `;
 
                         document.getElementById("inside_chat_area").innerHTML += tmp1;
 
@@ -354,8 +344,7 @@ function load() {
                                     <p class="message">${chat_entry}</p>
                                 </div>
                                 <img src="${localStorage.getItem("receiver_profilepicurl")}" alt="">
-                            </div>
-                                 `;
+                            </div> `;
 
                         document.getElementById("inside_chat_area").innerHTML += tmp2;
                     }
@@ -415,11 +404,8 @@ function add_to_contact(name, profile_pic) {
                 localStorage.setItem("contact", JSON.stringify(obj));
             }
         })
-
         if (flag == 0) {
-
             obj.push([name, profile_pic, Math.trunc((new Date().getTime()) / 1000)]);
-
             localStorage.setItem("contact", JSON.stringify(obj));
         }
         cntct_update();
@@ -476,8 +462,7 @@ function contact_toggle_btn() {
 
         obj.forEach((ele, ind) => {
 
-            let b = `
-                    
+            let b = ` 
             <div class="chat_profile">
                 <img class="chat_profile_pic" src="${ele[1]}" alt="">
                 <div onclick="user_wish('${ele[0]}', '${ele[1]}')">
@@ -486,8 +471,7 @@ function contact_toggle_btn() {
                 <button class="contact_add_btn" onclick="add_to_contact('${ele[0]}', '${ele[1]}')">
                     <i class="fa-sharp fa-solid fa-bookmark"></i>
                 </button>
-            </div>             
-            `;
+            </div> `;
 
             document.getElementById("your_contact").innerHTML += b;
 
@@ -500,7 +484,6 @@ function contact_toggle_btn() {
     }
 
     if (s == 0) {
-
         document.getElementById("your_contact").innerHTML = "<p>Not Found</p>";
     }
 }
@@ -554,9 +537,7 @@ function friends_toggle_btn() {
                         <button class="contact_add_btn" onclick="add_to_contact('${receiver_name}', '${receiver_pic}')">
                             <i class="fa-sharp fa-regular fa-bookmark"></i>
                         </button>
-                        </div> 
-                        
-                        `;
+                    </div> `;
 
                     obj.push(sender_name + "_" + receiver_name);
 
@@ -629,9 +610,7 @@ function new_msg_notification() {
                                 </div>
                                 <button class="contact_add_btn" onclick="add_to_contact('${ele[0]}', '${ele[1]}')">
                                     <i class="fa-sharp fa-solid fa-bookmark"></i>
-                                </button>
-
-                                        `;
+                                </button>`;
                         }
                         else {
                             document.querySelectorAll("#your_contact .chat_profile")[ind].innerHTML = `
@@ -642,9 +621,7 @@ function new_msg_notification() {
                                 </div>
                                 <button class="contact_add_btn" onclick="add_to_contact('${ele[0]}', '${ele[1]}')">
                                     <i class="fa-sharp fa-solid fa-bookmark"></i>
-                                </button>
-                            
-                                     `;
+                                </button> `;
                         }
                     }
                 })
