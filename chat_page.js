@@ -5,6 +5,7 @@ document.getElementById("user_pic_head").src = localStorage.getItem("user_photoU
 document.getElementById("fav_icon").href = localStorage.getItem("user_photoURL");
 let sndr_name;
 let rcvr_name;
+let rcvr_uid;
 
 window.addEventListener("load", () => {
     sndr_name = localStorage.getItem("user_name");
@@ -30,9 +31,7 @@ function button_disable() {
 // ======================================================================================
 
 
-
 // =========================================Wait=========================================
-
 
 function waiting_message() {
 
@@ -57,7 +56,6 @@ function waiting_message() {
 // ======================================================================================
 
 
-
 // ================================Chat Scroll to Bottom================================
 
 function chat_bottom() {
@@ -72,39 +70,33 @@ function chat_bottom() {
 
 function last_open_other_profile(name) {
     if (localStorage.getItem("contact") != null) {
-
         let obj = JSON.parse(localStorage.getItem("contact"));
-
         obj.forEach((ele, ind) => {
-
             if (ele[0] == name) {
-
-                ele[2] = Math.trunc((new Date().getTime()) / 1000);
+                ele[3] = Math.trunc((new Date().getTime()) / 1000);
                 localStorage.setItem("contact", JSON.stringify(obj));
             }
         })
     }
 }
 
-
-
 // ======================================================================================
-
 
 // =====================================User Wish=====================================
 
-
-function user_wish(name, receiver_profilepicurl) {
+function user_wish(name, receiver_profilepicurl, uid) {
 
     last_open_other_profile(name);
 
     document.getElementById("receiver_name_on_head").innerHTML = name;
     localStorage.setItem("receiver_name", name);
     localStorage.setItem("receiver_profilepicurl", receiver_profilepicurl);
+    localStorage.setItem("receiver_uid", uid);
 
     document.getElementById("receiver_pic_on_head").src = receiver_profilepicurl;
 
     rcvr_name = name;
+    rcvr_uid = uid;
 
     old_len = 0;
     document.getElementById("inside_chat_area").innerHTML = "";
@@ -122,11 +114,8 @@ function user_wish(name, receiver_profilepicurl) {
     let x = window.matchMedia("(max-width: 800px)")
     myFunction(x)
     x.addListener(myFunction)
-
-
 }
 // ======================================================================================
-
 
 
 // =============================================Back=========================================
@@ -135,8 +124,6 @@ function back() {
     document.getElementById("main_chat_screen").style.display = "none";
 }
 // ======================================================================================
-
-
 
 
 // ==================================Auto Back==========================================
@@ -148,7 +135,6 @@ else {
     document.getElementById("user_name").innerText = "You : " + localStorage.getItem("user_name");
 }
 // ======================================================================================
-
 
 
 // ===============================Contact Update===========================================
@@ -163,15 +149,13 @@ function cntct_update() {
     if (localStorage.getItem("user_uid") == null) {
         location.href = "login.html"
     }
-
     else {
-
         let username = localStorage.getItem("user_name");
         let useruid = localStorage.getItem("user_uid");
         let useremail = localStorage.getItem("user_email");
         let current_time = Math.trunc(new Date().getTime() / 1000);
 
-        var newData = {
+        let newData = {
             name: username,
             user_uid: useruid,
             time: current_time,
@@ -185,43 +169,37 @@ function cntct_update() {
             document.getElementById("chats").innerHTML = "";
             let flag = 0;
             let s = 0;
-
             snapshot.forEach(function (childSnapshot) {
-                var userData = childSnapshot.val();
+                let userData = childSnapshot.val();
 
                 let name = userData.name;
                 let time = userData.time;
+                let uid = userData.user_uid;
                 let userphotoURL = userData.user_photoURL;
 
                 if (current_time < time + 5) {
-
                     if (name != username) {
-
                         let tmp4 = `
                         <div class="chat_profile">
                             <img class="chat_profile_pic" src="${userphotoURL}" alt="">
-                            <div onclick="user_wish('${name}', '${userphotoURL}')">
+                            <div onclick="user_wish('${name}', '${userphotoURL}', '${uid}')">
                                 <p class="chat_person_name">${name}</p>
                             </div>
-                            <button class="contact_add_btn" onclick="add_to_contact('${name}', '${userphotoURL}')">
+                            <button class="contact_add_btn" onclick="add_to_contact('${name}', '${userphotoURL}', '${uid}')">
                                 <i class="fa-sharp fa-regular fa-bookmark"></i>
                             </button>
                         </div> `;
-                        s++;
-
                         document.getElementById("chats").innerHTML += tmp4;
-
-
                         if (localStorage.getItem("contact") != null) {
                             let obj = JSON.parse(localStorage.getItem("contact"));
 
                             obj.forEach((ele) => {
-
                                 if (ele[0] == name) {
-                                    document.getElementsByClassName("contact_add_btn")[s - 1].innerHTML = `<i class="fa-sharp fa-solid fa-bookmark"></i>`
+                                    document.getElementsByClassName("contact_add_btn")[s].innerHTML = `<i class="fa-sharp fa-solid fa-bookmark"></i>`
                                 }
                             })
                         }
+                        s++;
                     }
                     if (name == rcvr_name) {
                         flag = 1;
@@ -244,7 +222,6 @@ function cntct_update() {
     }
 }
 
-
 // ===========================================================================================
 
 
@@ -253,43 +230,94 @@ function cntct_update() {
 function data_submit() {
 
     let receiver_name = rcvr_name;
+    let receiver_uid = rcvr_uid;
+    let receiver_pic = localStorage.getItem("receiver_profilepicurl");
+
     let sender_name = localStorage.getItem("user_name");
+    let sender_uid = localStorage.getItem("user_uid");
+    let sender_pic = localStorage.getItem("user_photoURL");
+
     let chat_entry = document.getElementById("chat_entry").value;
     let date_time = new Date().toString().slice(0, 21);
     let current_time = new Date().getTime() / 1000;
-    // let sender_uid = localStorage.getItem("user_uid");
-    let sender_pic = localStorage.getItem("user_photoURL");
-    let receiver_pic = localStorage.getItem("receiver_profilepicurl");
 
-    var newData = {
-        sender_name: sender_name,
-        sender_pic: sender_pic,
-        chat_entry: chat_entry,
-        receiver_name: receiver_name,
-        receiver_pic: receiver_pic,
-        date_time: date_time,
-        current_time: current_time,
+    let user1_name;
+    let user1_uid;
+    let user1_pic;
 
-    };
-    firebase.database().ref("messages").push(newData);
+    let user2_name;
+    let user2_uid;
+    let user2_pic;
+
+    let result = sender_uid.localeCompare(receiver_uid);
+    let doc_id;
+    let chat_send_id;
+
+    if (result == -1) {
+        doc_id = `${sender_uid}_${receiver_uid}`;
+        chat_send_id = 1;
+        user1_name = sender_name;
+        user1_uid = sender_uid;
+        user1_pic = sender_pic;
+
+        user2_name = receiver_name;
+        user2_uid = receiver_uid;
+        user2_pic = receiver_pic;
+    }
+    else if (result == 1) {
+        doc_id = `${receiver_uid}_${sender_uid}`;
+        chat_send_id = 2;
+        user1_name = receiver_name;
+        user1_uid = receiver_uid;
+        user1_pic = receiver_pic;
+
+        user2_name = sender_name;
+        user2_uid = sender_uid;
+        user2_pic = sender_pic;
+    }
+
+    let chats;
+    firebase.database().ref("messages/" + doc_id).once("value", function (snapshot) {
+        if (snapshot.exists()) {
+            let userData = snapshot.val();
+            let get_chats_details = userData.chats_details;
+            chats = JSON.parse(get_chats_details);
+        }
+        else {
+            chats = [];
+        }
+
+        chats.push([chat_entry, date_time, current_time, chat_send_id]);
+        let newData = {
+            user1_name: user1_name,
+            user1_uid: user1_uid,
+            user1_pic: user1_pic,
+
+            user2_name: user2_name,
+            user2_uid: user2_uid,
+            user2_pic: user2_pic,
+
+            chats_details: JSON.stringify(chats)
+        };
+        firebase.database().ref("messages/" + doc_id).set(newData);
+    });
 }
 
-
-
 // ======================================================================================
-
 
 
 // ==================================Data Load==================================
 
 let sender_name;
-let chat_entry;
+let sndr_uid = localStorage.getItem("user_uid");
 let receiver_name;
+
+let chat_entry;
 let date_time;
+
 let length;
 let old_len = 0;
-let temp;
-
+let chat_send_id;
 
 setInterval(() => {
     load();
@@ -298,31 +326,37 @@ setInterval(() => {
 document.getElementById("inside_chat_area").innerHTML = "";
 
 function load() {
+    let result = sndr_uid.localeCompare(rcvr_uid);
+    let doc_id;
+    if (result == -1) {
+        doc_id = `${sndr_uid}_${rcvr_uid}`;
+    }
+    else if (result == 1) {
+        doc_id = `${rcvr_uid}_${sndr_uid}`;
+    }
 
-    firebase.database().ref("messages").once("value", function (snapshot) {
+    firebase.database().ref("messages/" + doc_id).once("value", function (snapshot) {
+        if (snapshot.exists()) {
+            var userData = snapshot.val();
+            var get_chats_details = userData.chats_details;
+            chats = JSON.parse(get_chats_details);
+            length = chats.length;
 
-        length = snapshot.numChildren();
+            if (length > old_len) {
+                for (let i = old_len; i < length; i++) {
+                    chat_entry = chats[i][0];
+                    date_time = chats[i][1];
+                    chat_send_id = chats[i][3];
 
-        if (length > old_len) {
-            temp = 1;
-
-            // console.log("run 1")
-
-            snapshot.forEach(function (childSnapshot) {
-                var userData = childSnapshot.val();
-                // console.log("run 2")
-
-
-                sender_name = userData.sender_name;
-                chat_entry = userData.chat_entry;
-                receiver_name = userData.receiver_name;
-                date_time = userData.date_time;
-
-                if (temp > old_len) {
-
-                    // console.log("run 3")
+                    if (chat_send_id == 1) {
+                        sender_name = userData.user1_name;
+                        receiver_name = userData.user2_name;
+                    }
+                    else if (chat_send_id == 2) {
+                        sender_name = userData.user2_name;
+                        receiver_name = userData.user1_name;
+                    }
                     if (sender_name == sndr_name && receiver_name == rcvr_name) {
-
                         let tmp1 = `
                             <div class="send_message">
                                 <div class="mess_time">
@@ -331,12 +365,9 @@ function load() {
                                 </div>
                                 <img src="${localStorage.getItem("user_photoURL")}" alt="">
                             </div>  `;
-
                         document.getElementById("inside_chat_area").innerHTML += tmp1;
-
                     }
                     else if (sender_name == rcvr_name && receiver_name == sndr_name) {
-
                         let tmp2 = `
                             <div class="received_message">
                                 <div class="mess_time">
@@ -345,20 +376,17 @@ function load() {
                                 </div>
                                 <img src="${localStorage.getItem("receiver_profilepicurl")}" alt="">
                             </div> `;
-
                         document.getElementById("inside_chat_area").innerHTML += tmp2;
                     }
                     chat_bottom();
                 }
-                temp++;
-            });
-            old_len = length;
+                old_len = length;
+            }
         }
     });
 }
 
 // =============================================================================================
-
 
 
 // ================================Last Location====================================
@@ -381,15 +409,17 @@ function lastlocation_call() {
 
 // ==================================Add to Contact====================================
 
-function add_to_contact(name, profile_pic) {
+function add_to_contact(name, profile_pic, uid) {
 
     if (localStorage.getItem("contact") == null) {
         let obj = [];
 
-        obj.push([name, profile_pic, Math.trunc((new Date().getTime()) / 1000)]);
+        obj.push([name, profile_pic, uid, Math.trunc((new Date().getTime()) / 1000)]);
 
         localStorage.setItem("contact", JSON.stringify(obj));
-        cntct_update();
+        // cntct_update();
+        // friends_bar();
+        lastlocation_call();
 
     }
     else {
@@ -405,10 +435,11 @@ function add_to_contact(name, profile_pic) {
             }
         })
         if (flag == 0) {
-            obj.push([name, profile_pic, Math.trunc((new Date().getTime()) / 1000)]);
+            obj.push([name, profile_pic, uid, Math.trunc((new Date().getTime()) / 1000)]);
             localStorage.setItem("contact", JSON.stringify(obj));
         }
-        cntct_update();
+        // cntct_update();
+        // friends_bar();
         lastlocation_call();
     }
 }
@@ -423,7 +454,6 @@ document.getElementById("online_btn").style.boxShadow = "0 0 5px 2px yellow";
 document.getElementById("your_contact").style.display = "none";
 
 function online_toggle_btn() {
-
     last_location = 1;
 
     document.getElementById("chats").style.display = "block";
@@ -437,10 +467,7 @@ function online_toggle_btn() {
 
 }
 
-
-
 function contact_toggle_btn() {
-
     last_location = 2;
 
     document.getElementById("your_contact").innerHTML = "";
@@ -457,32 +484,26 @@ function contact_toggle_btn() {
     let s = 0;
 
     if (localStorage.getItem("contact") != null) {
-
         let obj = JSON.parse(localStorage.getItem("contact"));
 
         obj.forEach((ele, ind) => {
-
             let b = ` 
             <div class="chat_profile">
                 <img class="chat_profile_pic" src="${ele[1]}" alt="">
-                <div onclick="user_wish('${ele[0]}', '${ele[1]}')">
+                <div onclick="user_wish('${ele[0]}', '${ele[1]}','${ele[2]}')">
                     <p class="chat_person_name">${ele[0]}</p>
                 </div>
-                <button class="contact_add_btn" onclick="add_to_contact('${ele[0]}', '${ele[1]}')">
+                <button class="contact_add_btn" onclick="add_to_contact('${ele[0]}', '${ele[1]}','${ele[2]}')">
                     <i class="fa-sharp fa-solid fa-bookmark"></i>
                 </button>
             </div> `;
-
             document.getElementById("your_contact").innerHTML += b;
-
             s++;
         });
-
         setInterval(() => {
             new_msg_notification();
         }, 2000);
     }
-
     if (s == 0) {
         document.getElementById("your_contact").innerHTML = "<p>Not Found</p>";
     }
@@ -493,7 +514,6 @@ function friends_toggle_btn() {
 
     last_location = 3;
 
-    document.getElementById("friends_sec").innerHTML = "";
 
     document.getElementById("chats").style.display = "none";
     document.getElementById("online_btn").style.boxShadow = "none";
@@ -503,132 +523,107 @@ function friends_toggle_btn() {
 
     document.getElementById("friends_sec").style.display = "block";
     document.getElementById("friends_btn").style.boxShadow = "0 0 5px 2px yellow";
+    friends_bar();
 
-    let obj = [];
+}
 
-    firebase.database().ref("messages").once("value", function (snapshot) {
 
-        snapshot.forEach(function (childSnapshot) {
-            var userData = childSnapshot.val();
+function friends_bar() {
+    document.getElementById("friends_sec").innerHTML = "";
+    let sender_uid = localStorage.getItem("user_uid");
 
-            sender_name = userData.sender_name;
-            receiver_name = userData.receiver_name;
-            receiver_pic = userData.receiver_pic;
+    firebase.database().ref("messages").orderByChild('user1_uid').equalTo(sender_uid).once('value', (snapshot) => {
+        if (snapshot.exists()) {
+            let s = 0;
+            snapshot.forEach(function (childSnapshot) {
+                let userData = childSnapshot.val();
+                let sender_name = userData.user1_name;
+                let receiver_name = userData.user2_name;
+                let receiver_pic = userData.user2_pic;
+                let receiver_uid = userData.user2_uid;
 
-            if (sender_name == sndr_name) {
-                let flag = 0;
+                let get_chats_details = userData.chats_details;
+                let chats = JSON.parse(get_chats_details);
+                let length = chats.length;
+                let last_chat_time = chats[length - 1][2];
 
-                if (obj[0] != null) {
-                    obj.forEach((ele, ind) => {
-                        if (obj[ind] == sender_name + "_" + receiver_name) {
-                            flag = 1;
-                        }
-                    })
-                }
-
-                if (flag == 0) {
-
-                    let tmp4 = `
+                let tmp4 = `
                     <div class="chat_profile">
                         <img class="chat_profile_pic" src="${receiver_pic}" alt="pic">
-                        <div onclick="user_wish('${receiver_name}', '${receiver_pic}')">
-                            <p class="chat_person_name">${receiver_name}</p>
+                        <div onclick="user_wish('${receiver_name}', '${receiver_pic}', '${receiver_uid}')">
+                            <p class="chat_person_name friendn">${receiver_name}</p>
                         </div>
-                        <button class="contact_add_btn" onclick="add_to_contact('${receiver_name}', '${receiver_pic}')">
+                        <button class="contact_add_btn friendb" onclick="add_to_contact('${receiver_name}', '${receiver_pic}','${receiver_uid}')">
                             <i class="fa-sharp fa-regular fa-bookmark"></i>
                         </button>
                     </div> `;
+                document.getElementById("friends_sec").innerHTML += tmp4;
 
-                    obj.push(sender_name + "_" + receiver_name);
-
-                    document.getElementById("friends_sec").innerHTML += tmp4;
+                if (localStorage.getItem("contact") != null) {
+                    let obj = JSON.parse(localStorage.getItem("contact"));
+                    obj.forEach((ele) => {
+                        if (ele[0] == receiver_name) {
+                            document.getElementsByClassName("friendb")[s].innerHTML = `<i class="fa-sharp fa-solid fa-bookmark"></i>`
+                        }
+                        if (ele[3] <= last_chat_time) {
+                            document.getElementsByClassName("friendn")[s].innerHTML += ` <i class="fa-solid fa-envelope fa-fade"></i>`
+                        }
+                    })
                 }
-            }
-        });
+                s++;
+            })
+        }
+    });
+    firebase.database().ref("messages").orderByChild('user2_uid').equalTo(sender_uid).once('value', (snapshot) => {
+        if (snapshot.exists()) {
+            let s = 0;
+            snapshot.forEach(function (childSnapshot) {
+                let userData = childSnapshot.val();
+                let sender_name = userData.user2_name;
+                let receiver_name = userData.user1_name;
+                let receiver_pic = userData.user1_pic;
+                let receiver_uid = userData.user1_uid;
+
+                let get_chats_details = userData.chats_details;
+                let chats = JSON.parse(get_chats_details);
+                let length = chats.length;
+                let last_chat_time = chats[length - 1][2];
+
+                let tmp4 = `
+                    <div class="chat_profile">
+                        <img class="chat_profile_pic" src="${receiver_pic}" alt="pic">
+                        <div onclick="user_wish('${receiver_name}', '${receiver_pic}', '${receiver_uid}')">
+                            <p class="chat_person_name friendn">${receiver_name}</p>
+                        </div>
+                        <button class="contact_add_btn friendb" onclick="add_to_contact('${receiver_name}', '${receiver_pic}','${receiver_uid}')">
+                            <i class="fa-sharp fa-regular fa-bookmark"></i>
+                        </button>
+                    </div> `;
+                document.getElementById("friends_sec").innerHTML += tmp4;
+                if (localStorage.getItem("contact") != null) {
+                    let obj = JSON.parse(localStorage.getItem("contact"));
+                    obj.forEach((ele) => {
+                        if (ele[0] == receiver_name) {
+                            document.getElementsByClassName("friendb")[s].innerHTML = `<i class="fa-sharp fa-solid fa-bookmark"></i>`
+                        }
+                        if (ele[3] <= last_chat_time) {
+                            document.getElementsByClassName("friendn")[s].innerHTML += ` <i class="fa-solid fa-envelope fa-fade"></i>`
+                        }
+                    })
+                }
+                s++;
+            })
+        }
     });
 }
 
 // =======================================================================================
 
 
-
-
 // =====================================sign out==========================================
 
-
 function sign_out_btn() {
-
     localStorage.clear();
     location.href = "login.html";
-
 }
-
 // =========================================================================================
-
-
-
-
-
-// ================================New Msg Notification================================
-
-let mn_sender_name;
-let mn_receiver_name;
-let mn_length;
-let mn_old_len = 0;
-let mn_temp;
-let msg_time;
-
-function new_msg_notification() {
-    firebase.database().ref("messages").once("value", function (snapshot) {
-
-        let obj = JSON.parse(localStorage.getItem("contact"));
-
-        snapshot.forEach(function (childSnapshot) {
-
-            var mn_userData = childSnapshot.val();
-
-            mn_sender_name = mn_userData.sender_name;
-            mn_receiver_name = mn_userData.receiver_name;
-            msg_time = mn_userData.current_time;
-
-
-            if (mn_receiver_name == sndr_name) {
-
-                obj.forEach((ele, ind) => {
-
-                    if (ele[0] == mn_sender_name) {
-
-                        if (ele[2] <= msg_time) {
-
-                            document.querySelectorAll("#your_contact .chat_profile")[ind].innerHTML = `
-
-                                <img class="chat_profile_pic" src="${ele[1]}" alt="pic">
-                                <div onclick="user_wish('${ele[0]}', '${ele[1]}')">
-                                    <p class="chat_person_name">${ele[0]} 
-                                    <i class="fa-solid fa-envelope fa-fade"></i>
-                                    </p>
-                                </div>
-                                <button class="contact_add_btn" onclick="add_to_contact('${ele[0]}', '${ele[1]}')">
-                                    <i class="fa-sharp fa-solid fa-bookmark"></i>
-                                </button>`;
-                        }
-                        else {
-                            document.querySelectorAll("#your_contact .chat_profile")[ind].innerHTML = `
-
-                                <img class="chat_profile_pic" src="${ele[1]}" alt="pic">
-                                <div onclick="user_wish('${ele[0]}', '${ele[1]}')">
-                                    <p class="chat_person_name">${ele[0]}</p>
-                                </div>
-                                <button class="contact_add_btn" onclick="add_to_contact('${ele[0]}', '${ele[1]}')">
-                                    <i class="fa-sharp fa-solid fa-bookmark"></i>
-                                </button> `;
-                        }
-                    }
-                })
-            }
-        })
-    })
-}
-
-
-// ==========================================================================================
