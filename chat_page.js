@@ -500,9 +500,6 @@ function contact_toggle_btn() {
             document.getElementById("your_contact").innerHTML += b;
             s++;
         });
-        setInterval(() => {
-            new_msg_notification();
-        }, 2000);
     }
     if (s == 0) {
         document.getElementById("your_contact").innerHTML = "<p>Not Found</p>";
